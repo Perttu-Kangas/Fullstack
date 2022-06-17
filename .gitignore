@@ -17,3 +17,6 @@
 # Netbrans
 nbproject/
 nbactions.xml
+
+# Private testing
+testing/
