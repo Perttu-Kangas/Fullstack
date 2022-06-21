@@ -77,6 +77,19 @@ const ShowCountries = (props) => {
 
 const ShowCountry = ({ country }) => {
   console.log(country.languages);
+  const [weather, setWeather] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get(
+        `https://api.openweathermap.org/data/2.5/weather?q=${country.capital[0]}&appid=${process.env.REACT_APP_API_KEY}&units=metric`
+      )
+      .then((response) => {
+        setWeather(response.data);
+        console.log(response.data);
+      });
+  }, [country]);
+
   return (
     <>
       <h1>{country.name.common}</h1>
@@ -89,6 +102,29 @@ const ShowCountry = ({ country }) => {
         })}
       </ul>
       <img src={country.flags.png} alt="flag" />
+      <ShowCountryWeather weather={weather}/>
+    </>
+  );
+};
+
+const ShowCountryWeather = ({ weather }) => {
+  console.log(weather)
+  if (weather === null) {
+    return null;
+  }
+  return (
+    <>
+      <h2>Weather in {weather.name}</h2>
+      <p>temperature {weather.main.temp} Celcius</p>
+      <img
+        src={
+          "http://openweathermap.org/img/wn/" +
+          weather.weather[0].icon +
+          "@2x.png"
+        }
+        alt="weathericon"
+      />
+      <p>wind {weather.wind.speed} m/s</p>
     </>
   );
 };
