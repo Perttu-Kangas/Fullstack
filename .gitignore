@@ -18,8 +18,5 @@
 nbproject/
 nbactions.xml
 
-# Private testing
-testing/
-
 # React
 node_modules/
