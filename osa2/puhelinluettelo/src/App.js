@@ -6,12 +6,20 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [newFilter, setNewFilter] = useState("");
+  const [message, setMessage] = useState({ error: false, message: null });
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
       setPersons(initialPersons);
     });
   }, []);
+
+  const handleMessage = (error, message) => {
+    setMessage({ error, message });
+    setTimeout(() => {
+      setMessage({ error: false, message: null });
+    }, 5000);
+  };
 
   const addPerson = (event) => {
     event.preventDefault();
@@ -35,6 +43,14 @@ const App = () => {
             );
             setNewName("");
             setNewNumber("");
+            handleMessage(false, `Changed number of ${returnedPerson.name}`);
+          })
+          .catch((error) => {
+            handleMessage(
+              true,
+              `Infromation of ${duplicatePerson.name} has been removed from server`
+            );
+            setPersons(persons.filter((p) => p.id !== duplicatePerson.id));
           });
       }
       return;
@@ -49,15 +65,26 @@ const App = () => {
       setPersons(persons.concat(returnedPerson));
       setNewName("");
       setNewNumber("");
+      handleMessage(false, `Added ${returnedPerson.name}`);
     });
   };
 
   const deletePer = (person) => {
     if (window.confirm(`Delete ${person.name} ?`)) {
-      personService.deletePerson(person.id).then((response) => {
-        console.log(response);
-        setPersons(persons.filter((filter) => filter.id !== person.id));
-      });
+      personService
+        .deletePerson(person.id)
+        .then((response) => {
+          console.log(response);
+          setPersons(persons.filter((filter) => filter.id !== person.id));
+          handleMessage(false, `Deleted ${person.name}`);
+        })
+        .catch((error) => {
+          handleMessage(
+            true,
+            `Infromation of ${person.name} has been removed from server`
+          );
+          setPersons(persons.filter((p) => p.id !== person.id));
+        });
     }
   };
 
@@ -79,11 +106,14 @@ const App = () => {
   const personsToShow =
     newFilter.length === 0
       ? persons
-      : persons.filter((person) => person.name.toLowerCase().includes(newFilter.toLowerCase()));
+      : persons.filter((person) =>
+          person.name.toLowerCase().includes(newFilter.toLowerCase())
+        );
 
   return (
     <div>
       <h1>Phonebook</h1>
+      <Message message={message.message} error={message.error} />
       <Filter newFilter={newFilter} handleFilterChange={handleFilterChange} />
       <h2>add a new</h2>
       <PersonForm
@@ -135,6 +165,24 @@ const Persons = (props) => {
       ))}
     </>
   );
+};
+
+const Message = (props) => {
+  if (props.message === null) {
+    return null;
+  }
+
+  const messageStyle = {
+    color: props.error ? "red" : "green",
+    background: "lightgrey",
+    fontSize: 20,
+    borderStyle: "solid",
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  };
+
+  return <div style={messageStyle}>{props.message}</div>;
 };
 
 export default App;
