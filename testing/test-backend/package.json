@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:ui": "rm -rf build && cd ../test-react/ && npm run build && cp -r build ../test-backend/",
+    "deploy": "git push heroku master",
+    "deploy:full": "npm run build:ui && heroku git:remote -a nameless-fortress-89081 && git add . && git commit -am uibuild && npm run deploy",      
+    "logs:prod": "heroku logs --tail"
   },
   "author": "",
   "license": "ISC",
@@ -16,5 +20,6 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.18"
-  }
+  },
+  "proxy": "http://localhost:3001"
 }
