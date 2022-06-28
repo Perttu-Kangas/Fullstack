@@ -1,0 +1,14 @@
+Front:
+- react
+- axios
+
+Front dev:
+- json-server
+
+Back
+- nodejs (+npm)
+- express
+- morgan
+
+Back dev:
+- nodemon
