@@ -10,6 +10,7 @@ Back
 - express
 - morgan
 - cors
+- mongoose
 
 Back dev:
 - nodemon
