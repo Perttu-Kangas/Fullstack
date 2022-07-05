@@ -6,10 +6,9 @@ const cors = require("cors");
 const Person = require("./models/person");
 
 const app = express();
-app.use(express.json());
 
-app.use(cors());
 app.use(express.static("build"));
+app.use(express.json());
 
 morgan.token("body", (req, res) => {
   return req.method === "POST" ? JSON.stringify(req.body) : "";
@@ -17,6 +16,8 @@ morgan.token("body", (req, res) => {
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :body")
 );
+
+app.use(cors());
 
 app.get("/api/persons", (req, res) => {
   Person.find({}).then((persons) => {
