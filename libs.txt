@@ -11,6 +11,7 @@ Back
 - morgan
 - cors
 - mongoose
+- dotenv
 
 Back dev:
 - nodemon
