@@ -51,7 +51,11 @@ app.post("/api/persons", (req, res) => {
 
 app.get("/api/persons/:id", (req, res) => {
   Person.findById(req.params.id).then((person) => {
-    return person ? res.json(person) : res.status(404).end();
+    if (person) {
+      res.json(person);
+    } else {
+      res.status(404).end();
+    }
   });
 });
 
@@ -62,9 +66,11 @@ app.delete("/api/persons/:id", (req, res) => {
 });
 
 app.get("/info", (req, res) => {
-  Person.find({}).count().then((count) => {
-    res.send(`Phonebook has info for ${count} people. <br>` + new Date());
-  });
+  Person.find({})
+    .count()
+    .then((count) => {
+      res.send(`Phonebook has info for ${count} people. <br>` + new Date());
+    });
 });
 
 const PORT = process.env.PORT;
