@@ -10,7 +10,8 @@
     "build:ui": "rm -rf build && cd ../test-react/ && npm run build && cp -r build ../test-backend/",
     "deploy": "git push heroku master",
     "deploy:full": "npm run build:ui && heroku git:remote -a nameless-fortress-89081 && git add . && git commit -am uibuild && npm run deploy",
-    "logs:prod": "heroku logs --tail"
+    "logs:prod": "heroku logs --tail",
+    "lint": "eslint ."
   },
   "author": "",
   "license": "ISC",
@@ -21,6 +22,8 @@
     "mongoose": "^6.4.2"
   },
   "devDependencies": {
+    "eslint": "^8.19.0",
+    "eslint-plugin-react": "^7.30.1",
     "nodemon": "^2.0.18"
   },
   "proxy": "http://localhost:3001"

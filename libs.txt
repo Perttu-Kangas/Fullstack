@@ -12,6 +12,7 @@ Back
 - cors
 - mongoose
 - dotenv
+- eslint
 
 Back dev:
 - nodemon
