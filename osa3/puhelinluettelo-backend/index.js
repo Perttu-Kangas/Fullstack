@@ -25,7 +25,7 @@ app.get("/api/persons", (req, res) => {
   });
 });
 
-app.post("/api/persons", (req, res) => {
+app.post("/api/persons", (req, res, next) => {
   const body = req.body;
 
   if (!body.name || !body.number) {
@@ -34,24 +34,21 @@ app.post("/api/persons", (req, res) => {
     });
   }
 
-  //if (persons.find((person) => person.name === body.name)) {
-  //  return res.status(400).json({
-  //    error: "name must be unique",
-  //  });
-  //}
-
   const personObject = new Person({
     name: body.name,
     number: body.number,
   });
 
-  personObject.save().then((savedPerson) => {
-    res.json(savedPerson);
-  });
+  personObject
+    .save()
+    .then((savedPerson) => {
+      res.json(savedPerson);
+    })
+    .catch((error) => next(error));
 });
 
 app.get("/api/persons/:id", (req, res, next) => {
-  console.log(req.params.id)
+  console.log(req.params.id);
   Person.findById(req.params.id)
     .then((person) => {
       if (person) {
@@ -66,7 +63,7 @@ app.get("/api/persons/:id", (req, res, next) => {
 });
 
 app.delete("/api/persons/:id", (req, res, next) => {
-  console.log(req.params.id)
+  console.log(req.params.id);
   Person.findByIdAndRemove(req.params.id)
     .then((person) => {
       res.status(204).end();
@@ -96,7 +93,11 @@ app.put("/api/persons/:id", (req, res, next) => {
     number: body.number,
   };
 
-  Person.findByIdAndUpdate(req.params.id, personObject, { new: true })
+  Person.findByIdAndUpdate(req.params.id, personObject, {
+    new: true,
+    runValidators: true,
+    context: "query",
+  })
     .then((updatedPerson) => {
       res.json(updatedPerson);
     })
@@ -108,6 +109,8 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
+  } else if (error.name === "ValidationError") {
+    return response.status(400).json({ error: error.message });
   }
 
   next(error);

@@ -48,7 +48,7 @@ const App = () => {
           .catch((error) => {
             handleMessage(
               true,
-              `Infromation of ${duplicatePerson.name} has been removed from server`
+              `Information of ${duplicatePerson.name} has been removed from server`
             );
             setPersons(persons.filter((p) => p.id !== duplicatePerson.id));
           });
@@ -61,12 +61,17 @@ const App = () => {
       number: newNumber,
     };
 
-    personService.create(personObject).then((returnedPerson) => {
-      setPersons(persons.concat(returnedPerson));
-      setNewName("");
-      setNewNumber("");
-      handleMessage(false, `Added ${returnedPerson.name}`);
-    });
+    personService
+      .create(personObject)
+      .then((returnedPerson) => {
+        setPersons(persons.concat(returnedPerson));
+        setNewName("");
+        setNewNumber("");
+        handleMessage(false, `Added ${returnedPerson.name}`);
+      })
+      .catch((error) => {
+        handleMessage(true, error.response.data.error);
+      });
   };
 
   const deletePer = (person) => {
