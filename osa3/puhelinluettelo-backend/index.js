@@ -10,7 +10,7 @@ const app = express()
 app.use(express.static('build'))
 app.use(express.json())
 
-morgan.token('body', (req, res) => {
+morgan.token('body', (req) => {
   return req.method === 'POST' ? JSON.stringify(req.body) : ''
 })
 app.use(
@@ -65,7 +65,7 @@ app.get('/api/persons/:id', (req, res, next) => {
 app.delete('/api/persons/:id', (req, res, next) => {
   console.log(req.params.id)
   Person.findByIdAndRemove(req.params.id)
-    .then((person) => {
+    .then(() => {
       res.status(204).end()
     })
     .catch((error) => next(error))
