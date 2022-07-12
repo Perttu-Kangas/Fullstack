@@ -16,3 +16,4 @@ Back
 
 Back dev:
 - nodemon
+- jest
