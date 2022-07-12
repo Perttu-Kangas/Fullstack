@@ -20,3 +20,5 @@ nbactions.xml
 
 # React
 node_modules/
+
+.env
