@@ -1,19 +1,22 @@
 Front:
 - react
-- axios
+- axios (http requests)
 
 Front dev:
-- json-server
+- json-server (front testing)
 
 Back
 - nodejs (+npm)
-- express
-- morgan
-- cors
-- mongoose
-- dotenv
-- eslint
+- express (more comfortable to use than plain node web server)
+- morgan (change how logging is formatted)
+- cors (allows usage of different origins)
+- mongoose (makes using mongodb easier)
+- dotenv (allows usage of env)
+- eslint (code formatting)
+- express-async-errors (removes the need for try/catch and 'next' when exception occurs)
 
 Back dev:
-- nodemon
-- jest
+- nodemon (restart server automatically when there is changes)
+- jest (tests)
+- cross-env (otherwise environment variables wont work with windows)
+- supertest (tests (e.g. can wrap express app))
