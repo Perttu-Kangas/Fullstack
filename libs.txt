@@ -14,6 +14,7 @@ Back
 - dotenv (allows usage of env)
 - eslint (code formatting)
 - express-async-errors (removes the need for try/catch and 'next' when exception occurs)
+- bcrypt (hashing passwords)
 
 Back dev:
 - nodemon (restart server automatically when there is changes)
