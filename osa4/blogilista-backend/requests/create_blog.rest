@@ -1,9 +1,10 @@
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjYyZTJiOGFjMmZiMTg4YjE1YTA5OWNiZCIsImlhdCI6MTY1OTAyNTYwMSwiZXhwIjoxNjU5MDI5MjAxfQ.jVj-poqBMByjj3PILUNeCuogLwo-UIQB46_ecNLU2k8
 
 {
-    "title": "Asddd",
-    "author": "Author Name",
-    "url": "https://www.abcdef.com/",
-    "likes": 5
+    "title": "Mmmmm",
+    "author": "Aaaaaaaaaaa",
+    "url": "https://www.ccccccccc.com/",
+    "likes": 10
 }
