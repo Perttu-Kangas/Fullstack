@@ -1,19 +1,19 @@
 const Notification = (props) => {
   if (props.notification === null) {
-    return null;
+    return null
   }
 
   const notificaitonStyle = {
-    color: props.error ? "red" : "green",
-    background: "lightgrey",
+    color: props.error ? 'red' : 'green',
+    background: 'lightgrey',
     fontSize: 20,
-    borderStyle: "solid",
+    borderStyle: 'solid',
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
-  };
+  }
 
-  return <div style={notificaitonStyle}>{props.notification}</div>;
-};
+  return <div style={notificaitonStyle}>{props.notification}</div>
+}
 
 export default Notification

@@ -1,9 +1,11 @@
 Front:
 - react
 - axios (http requests)
+- prop-types (mandatory props)
 
 Front dev:
 - json-server (front testing)
+- eslint-plugin-jest (front testing)
 
 Back
 - nodejs (+npm)
