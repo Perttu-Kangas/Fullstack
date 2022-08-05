@@ -22,3 +22,4 @@ nbactions.xml
 node_modules/
 
 .env
+coverage/

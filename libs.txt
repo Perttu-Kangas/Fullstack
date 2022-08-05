@@ -6,6 +6,8 @@ Front:
 Front dev:
 - json-server (front testing)
 - eslint-plugin-jest (front testing)
+- @testing-library/react @testing-library/jest-dom (render react components for testing)
+- @testing-library/user-event (e.g. button tests)
 
 Back
 - nodejs (+npm)
