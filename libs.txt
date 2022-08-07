@@ -8,6 +8,8 @@ Front dev:
 - eslint-plugin-jest (front testing)
 - @testing-library/react @testing-library/jest-dom (render react components for testing)
 - @testing-library/user-event (e.g. button tests)
+- cypress (end to end testing)
+- eslint-plugin-cypress (get rid of eslint error when using cy)
 
 Back
 - nodejs (+npm)

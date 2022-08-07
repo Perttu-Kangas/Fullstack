@@ -73,7 +73,7 @@ const App = () => {
     blogService
       .create(newBlog)
       .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
+        updateBlogs()
         handleMessage(false, `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
       })
   }

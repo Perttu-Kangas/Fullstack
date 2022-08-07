@@ -13,7 +13,7 @@ const Notification = (props) => {
     marginBottom: 10,
   }
 
-  return <div style={notificaitonStyle}>{props.notification}</div>
+  return <div className="notification" style={notificaitonStyle}>{props.notification}</div>
 }
 
 export default Notification

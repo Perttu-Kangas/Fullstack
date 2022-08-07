@@ -18,7 +18,7 @@ const Blog = ({ blog, likeBlog, deleteBlog, user }) => {
   //console.log(blog)
 
   return (
-    <div style={blogStyle}>
+    <div className="blog" style={blogStyle}>
       {visible ?
         <div>
           {blog.title} {blog.author} <button onClick={toggleVisibility}>hide</button>
