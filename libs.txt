@@ -2,6 +2,7 @@ Front:
 - react
 - axios (http requests)
 - prop-types (mandatory props)
+- redux (easier state control in larger projects via 'store')
 
 Front dev:
 - json-server (front testing)
@@ -10,6 +11,7 @@ Front dev:
 - @testing-library/user-event (e.g. button tests)
 - cypress (end to end testing)
 - eslint-plugin-cypress (get rid of eslint error when using cy)
+- deep-freeze (ensure reducer is made properly)
 
 Back
 - nodejs (+npm)
