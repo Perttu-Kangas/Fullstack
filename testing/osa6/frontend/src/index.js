@@ -1,15 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-
 import { createStore } from 'redux'
-
-const noteReducer = (state = [], action) => {
-  if (action.type === 'NEW_NOTE') {
-    return state.concat(action.data)
-  }
-
-  return state
-}
+import { Provider } from 'react-redux'
+import App from './App'
+import noteReducer from './reducers/noteReducer'
 
 const store = createStore(noteReducer)
 
@@ -31,23 +25,8 @@ store.dispatch({
   }
 })
 
-const App = () => {
-  return (
-    <div>
-      <ul>
-        {store.getState().map(note =>
-          <li key={note.id}>
-            {note.content} <strong>{note.important ? 'important' : ''}</strong>
-          </li>
-        )}
-      </ul>
-    </div>
-  )
-}
-
-const renderApp = () => {
-  ReactDOM.createRoot(document.getElementById('root')).render(<App />)
-}
-
-renderApp()
-store.subscribe(renderApp)
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <Provider store={store}>
+    <App />
+  </Provider>
+)
