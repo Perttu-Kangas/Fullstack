@@ -4,6 +4,7 @@ Front:
 - prop-types (mandatory props)
 - redux (easier state control in larger projects via 'store')
 - react-redux (pass Redux-store to other components)
+- @reduxjs/toolkit (simplifies usage of redux)
 
 Front dev:
 - json-server (front testing)
