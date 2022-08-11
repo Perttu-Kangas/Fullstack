@@ -26,15 +26,9 @@ const anecdoteSlice = createSlice({
   initialState,
   reducers: {
     createAnecdote(state, action) {
-      const content = action.payload
-
-      // Redux toolkit makes sure you can just state.push()
-      state.push({
-        content,
-        id: getId(),
-        votes: 0
-      })
-    }, vote(state, action) {
+      state.push(action.payload)
+    },
+    vote(state, action) {
       const id = action.payload
       const anecdoteToVote = state.find(n => n.id === id)
       const changedAnecdote = {
@@ -44,9 +38,12 @@ const anecdoteSlice = createSlice({
       return state.map(anecdote =>
         anecdote.id !== id ? anecdote : changedAnecdote
       ).sort((a1, a2) => a2.votes - a1.votes)
+    },
+    setAnecdotes(state, action) {
+      return action.payload
     }
   }
 })
 
-export const { createAnecdote, vote } = anecdoteSlice.actions
+export const { createAnecdote, vote, setAnecdotes } = anecdoteSlice.actions
 export default anecdoteSlice.reducer
