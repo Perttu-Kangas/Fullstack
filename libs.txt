@@ -5,6 +5,7 @@ Front:
 - redux (easier state control in larger projects via 'store')
 - react-redux (pass Redux-store to other components)
 - @reduxjs/toolkit (simplifies usage of redux)
+- redux-thunk (action creators which return function instead of object)
 
 Front dev:
 - json-server (front testing)
