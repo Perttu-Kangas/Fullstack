@@ -25,6 +25,14 @@ const blogSlice = createSlice({
       const id = action.payload
       return state.filter(blog => blog.id !== id)
         .sort(byLikes)
+    },
+    commentBlog(state, action) {
+      const id = action.payload.id
+      const comment = action.payload.comment
+      const blogToChange = state.find(n => n.id === id)
+      const changedBlog = { ...blogToChange, comments: blogToChange.comments.concat(comment) }
+      return state.map(blog => blog.id !== id ? blog : changedBlog)
+        .sort(byLikes)
     }
   }
 })
@@ -43,5 +51,5 @@ export const createBlog = content => {
   }
 }
 
-export const { setBlogs, addBlog, likeBlogId, removeBlogId } = blogSlice.actions
+export const { setBlogs, addBlog, likeBlogId, removeBlogId, commentBlog } = blogSlice.actions
 export default blogSlice.reducer
