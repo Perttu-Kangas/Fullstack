@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import userService from '../services/user'
 
 const initialState = null
 
@@ -7,10 +8,12 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUser(state, action) {
-      return action.payload
+      const user = action.payload
+      userService.setUser(user)
+      return user
     },
     clearUser() {
-      localStorage.clear()
+      userService.clearUser()
       return initialState
     }
   },
