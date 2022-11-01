@@ -1,4 +1,11 @@
 front:
+
 front dev:
+
 back:
+- apollo-server
+- graphql
+- uuid
+
 back dev:
+- nodemon
