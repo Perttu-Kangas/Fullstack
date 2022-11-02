@@ -1,4 +1,5 @@
 front:
+- @apollo/client graphql
 
 front dev:
 
