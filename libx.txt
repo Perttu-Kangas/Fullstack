@@ -7,6 +7,9 @@ back:
 - apollo-server
 - graphql
 - uuid
+- mongoose
+- jsonwebtoken
+- dotenv
 
 back dev:
 - nodemon
