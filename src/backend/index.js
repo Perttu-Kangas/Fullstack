@@ -77,16 +77,16 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    bookCount: async () => Book.collection.countDocuments(),
-    authorCount: async () => Author.collection.countDocuments(),
-    allBooks: (root, args) => {
+    bookCount: async () => await Book.collection.countDocuments(),
+    authorCount: async () => await Author.collection.countDocuments(),
+    allBooks: async (root, args) => {
       if (!args.author && !args.genre) {
-        return Book.find({})
+        return Book.find({}).populate('author')
       }
 
       // "kyselyn allBooks parametrin author toimintaansaattaminen on vapaaehtoinen lisätehtävä!"
       // :)
-      return Book.find({ genres: { $in: args.genre } })
+      return Book.find({ genres: { $in: args.genre } }).populate('author')
     },
     allAuthors: async () => Author.find({}),
     me: (root, args, context) => context.currentUser,
@@ -102,8 +102,8 @@ const resolvers = {
       let author = await Author.findOne({ name: args.author })
       if (!author) {
         try {
-          author = new Author({ name: args.author })
-          author = await author.save()
+          const author2 = new Author({ name: args.author })
+          author = await author2.save()
         } catch (error) {
           throw new UserInputError(error.message, {
             invalidArgs: args,
@@ -112,9 +112,10 @@ const resolvers = {
       }
 
       try {
-        let book = new Book({ ...args, author: author._id })
-        book = await book.save()
-        return book
+        const book = new Book({ ...args, author: author._id })
+        const book2 = await book.save()
+        book2.author = author
+        return book2
       } catch (error) {
         throw new UserInputError(error.message, {
           invalidArgs: args,
@@ -140,7 +141,7 @@ const resolvers = {
       }
     },
     createUser: async (root, args) => {
-      const user = new User({ username: args.username })
+      const user = new User({ ...args })
 
       return user.save().catch((error) => {
         throw new UserInputError(error.message, {
@@ -165,9 +166,13 @@ const resolvers = {
   },
   Author: {
     name: (root) => root.name,
-    born: (root) => root.born,
+    born: (root) => root.born ? root.born : 0,
     bookCount: async (root) => {
-      return await Book.find({ author: root._id }).length
+      const books = await Book.find({ author: root._id })
+      if (!books) {
+        return 0
+      }
+      return books.length
     }
   }
 }
