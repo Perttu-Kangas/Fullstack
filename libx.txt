@@ -1,6 +1,9 @@
 front:
-- @apollo/client graphql
+- graphql
 - apollo-link-context
+- @apollo/client
+- graphql-ws
+- ws
 
 front dev:
 
@@ -11,6 +14,12 @@ back:
 - mongoose
 - jsonwebtoken
 - dotenv
+- apollo-server-express
+- apollo-server-core
+- express
+- @graphql-tools/schema
+- graphql-subscriptions
+- graphql-ws
 
 back dev:
 - nodemon
