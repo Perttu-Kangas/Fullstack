@@ -1,0 +1,8 @@
+front:
+
+front dev:
+
+back:
+
+back dev:
+- nodemon
