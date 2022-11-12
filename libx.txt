@@ -6,3 +6,6 @@ back:
 
 back dev:
 - nodemon
+- ts-node
+- typescript
+- @types/node (older vers)
