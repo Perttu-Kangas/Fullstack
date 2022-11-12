@@ -14,3 +14,4 @@ back dev:
 - eslint
 - @typescript-eslint/eslint-plugin
 - @typescript-eslint/parser
+- @types/cors
