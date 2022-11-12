@@ -11,3 +11,6 @@ back dev:
 - @types/node (older vers)
 - @types/express
 - ts-node-dev
+- eslint
+- @typescript-eslint/eslint-plugin
+- @typescript-eslint/parser

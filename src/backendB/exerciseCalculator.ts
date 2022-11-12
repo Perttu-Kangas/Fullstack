@@ -8,8 +8,8 @@ interface Exercises {
   average: number
 }
 
-const parseArgumentsExercise = (args: Array<string>): Array<number> => {
-  if (args.length < 3) throw new Error('Not enough arguments')
+export const parseArgumentsExercise = (args: Array<string>): Array<number> => {
+  if (!args || args.length < 3) throw new Error('Not enough arguments')
 
   const exerciseDays: Array<number> = []
 
@@ -27,10 +27,12 @@ const calculateAverage = (numberList: Array<number>): number => {
   return numberList.reduce((a, b) => a + b, 0) / numberList.length
 }
 
-const calculateExercises = (exerciseDays: Array<number>): Exercises => {
+export const calculateExercises = (
+  exerciseDays: Array<number>,
+  target: number
+): Exercises => {
   const avg = calculateAverage(exerciseDays)
 
-  const target = 2
   let rating
   let ratingDescription
   if (avg < target) {
@@ -56,7 +58,7 @@ const calculateExercises = (exerciseDays: Array<number>): Exercises => {
 }
 
 try {
-  console.log(calculateExercises(parseArgumentsExercise(process.argv)))
+  console.log(calculateExercises(parseArgumentsExercise(process.argv), 2))
 } catch (error: unknown) {
   let errorMessage = 'Something bad happened.'
   if (error instanceof Error) {
