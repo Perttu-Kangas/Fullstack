@@ -3,9 +3,11 @@ front:
 front dev:
 
 back:
+- express
 
 back dev:
-- nodemon
 - ts-node
 - typescript
 - @types/node (older vers)
+- @types/express
+- ts-node-dev
