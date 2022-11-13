@@ -1,14 +1,11 @@
 import { CoursePart } from '../App'
+import Part from './Part'
 
 const Content = ({ courseParts }: { courseParts: CoursePart[] }) => {
   return (
     <>
       {courseParts.map((p) => {
-        return (
-          <p>
-            {p.name} {p.exerciseCount}
-          </p>
-        )
+        return <Part key={p.name} part={p} />
       })}
     </>
   )
