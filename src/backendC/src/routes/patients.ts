@@ -4,7 +4,7 @@ import toNewPatient from '../utils/patientUtil'
 const router = express.Router()
 
 router.get('/', (_req, res) => {
-  res.send(patientService.getNonSensitivePatients())
+  res.json(patientService.getPublicPatients())
 })
 
 router.post('/', (req, res) => {
@@ -19,6 +19,16 @@ router.post('/', (req, res) => {
       errorMessage += ' Error: ' + error.message
     }
     res.status(400).send(errorMessage)
+  }
+})
+
+router.get('/:id', (req, res) => {
+  const patient = patientService.findById(req.params.id)
+
+  if (patient) {
+    res.json(patient)
+  } else {
+    res.status(400).send('Something went wrong')
   }
 })
 

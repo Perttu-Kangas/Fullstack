@@ -1,19 +1,26 @@
-import { State } from "./state";
-import { Patient } from "../types";
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+import { State } from './state'
+import { Patient } from '../types'
 
 export type Action =
   | {
-      type: "SET_PATIENT_LIST";
-      payload: Patient[];
+      type: 'SET_PATIENT_LIST'
+      payload: Patient[]
     }
   | {
-      type: "ADD_PATIENT";
-      payload: Patient;
-    };
+      type: 'ADD_PATIENT'
+      payload: Patient
+    }
+  | {
+      type: 'UPDATE_PATIENT_LIST'
+      payload: Patient
+    }
 
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
-    case "SET_PATIENT_LIST":
+    case 'SET_PATIENT_LIST':
       return {
         ...state,
         patients: {
@@ -21,18 +28,50 @@ export const reducer = (state: State, action: Action): State => {
             (memo, patient) => ({ ...memo, [patient.id]: patient }),
             {}
           ),
-          ...state.patients
-        }
-      };
-    case "ADD_PATIENT":
+          ...state.patients,
+        },
+      }
+    case 'ADD_PATIENT':
       return {
         ...state,
         patients: {
           ...state.patients,
-          [action.payload.id]: action.payload
-        }
-      };
+          [action.payload.id]: action.payload,
+        },
+      }
+    case 'UPDATE_PATIENT_LIST':
+      if (!Object.keys(state.patients).includes(action.payload.id)) {
+        return state
+      }
+      return {
+        ...state,
+        patients: {
+          ...state.patients,
+          [action.payload.id]: action.payload,
+        },
+      }
     default:
-      return state;
+      return state
   }
-};
+}
+
+export const setPatientList = (patientList: Patient[]): Action => {
+  return {
+    type: 'SET_PATIENT_LIST',
+    payload: patientList,
+  }
+}
+
+export const addPatient = (patient: Patient): Action => {
+  return {
+    type: 'ADD_PATIENT',
+    payload: patient,
+  }
+}
+
+export const updatePatientList = (patient: Patient): Action => {
+  return {
+    type: 'UPDATE_PATIENT_LIST',
+    payload: patient,
+  }
+}
