@@ -4,6 +4,8 @@ front dev:
 
 back:
 - express
+- uuid
+- cors
 
 back dev:
 - ts-node
