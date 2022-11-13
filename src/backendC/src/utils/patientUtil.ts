@@ -1,4 +1,4 @@
-import { NewPatient, Gender } from '../types'
+import { NewPatient, Gender, Entry } from '../types'
 
 const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String
@@ -36,6 +36,27 @@ const parseGender = (gender: unknown): Gender => {
   return gender
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isEntry = (param: any): param is Entry => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  return param.type !== undefined && param.type !== null
+}
+
+export const toEntries = (entries: unknown): Entry[] => {
+  if (!entries || !Array.isArray(entries)) {
+    throw new Error('Incorrect or missing entries: ' + entries)
+  }
+
+  entries.forEach((element) => {
+    if (!isEntry(element)) {
+      throw new Error('Incorrect or missing entries: ' + entries)
+    }
+  })
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return entries
+}
+
 type Fields = {
   name: unknown
   dateOfBirth: unknown
@@ -44,7 +65,7 @@ type Fields = {
   occupation: unknown
 }
 
-const toNewPatient = ({
+export const toNewPatient = ({
   name,
   dateOfBirth,
   ssn,
@@ -61,5 +82,3 @@ const toNewPatient = ({
 
   return newEntry
 }
-
-export default toNewPatient
