@@ -5,7 +5,9 @@ import axios from 'axios'
 import { useParams } from 'react-router-dom'
 import { updatePatientList, useStateValue } from '../state'
 import { apiBaseUrl } from '../constants'
-import { Patient } from '../types'
+import { BaseEntry, Patient } from '../types'
+import { EntryFormValues } from './AddEntryForm'
+import AddPatientModal from '../AddPatientModal'
 
 const PatientInfo = () => {
   const [{ patients, diagnoses }, dispatch] = useStateValue()
@@ -16,6 +18,35 @@ const PatientInfo = () => {
   }
 
   const patient = patients[id]
+
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false)
+  const [error, setError] = React.useState<string>()
+
+  const openModal = (): void => setModalOpen(true)
+
+  const closeModal = (): void => {
+    setModalOpen(false)
+    setError(undefined)
+  }
+
+  const submitNewEntry = async (values: EntryFormValues) => {
+    try {
+      const { data: newPatientEntry } = await axios.post<Patient>(
+        `${apiBaseUrl}/patients/${id}/`,
+        values
+      )
+      dispatch(updatePatientList(newPatientEntry))
+      closeModal()
+    } catch (e: unknown) {
+      if (axios.isAxiosError(e)) {
+        console.error(e?.response?.data || 'Unrecognized axios error')
+        setError(String(e?.response?.data?.error) || 'Unrecognized axios error')
+      } else {
+        console.error('Unknown error', e)
+        setError('Unknown error')
+      }
+    }
+  }
 
   React.useEffect(() => {
     void axios.get<void>(`${apiBaseUrl}/ping`)
@@ -40,8 +71,6 @@ const PatientInfo = () => {
   if (!patient) {
     return <></>
   }
-
-  console.log(patient.entries)
 
   if (!patient.entries) {
     return (
@@ -76,6 +105,12 @@ const PatientInfo = () => {
           )}
         </>
       ))}
+      <AddPatientModal
+        modalOpen={modalOpen}
+        onSubmit={submitNewEntry}
+        error={error}
+        onClose={closeModal}
+      />
     </>
   )
 }

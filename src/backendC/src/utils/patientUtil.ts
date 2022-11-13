@@ -1,4 +1,4 @@
-import { NewPatient, Gender, Entry } from '../types'
+import { NewPatient, Gender, Entry, NewEntry } from '../types'
 
 const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String
@@ -81,4 +81,24 @@ export const toNewPatient = ({
   }
 
   return newEntry
+}
+
+type FieldsDia = {
+  description: unknown
+  date: unknown
+  specialist: unknown
+}
+
+export const toNewEntry = ({
+  description,
+  date,
+  specialist,
+}: FieldsDia): NewEntry => {
+  const newEntrys: NewEntry = {
+    description: parseString(description),
+    date: parseDate(date),
+    specialist: parseString(specialist),
+  }
+
+  return newEntrys
 }

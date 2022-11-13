@@ -64,3 +64,9 @@ export enum Gender {
 }
 
 export type NewPatient = Omit<Patient, 'id' | 'entries'>
+
+export type NewEntry =
+  | Omit<BaseEntry, 'id'>
+  | Omit<HospitalEntry, 'id'>
+  | Omit<OccupationalHealthcareEntry, 'id'>
+  | Omit<HealthCheckEntry, 'id'>
