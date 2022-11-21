@@ -33,6 +33,13 @@ jobs:
           command: npm run test:e2e
           start: npm run start-prod
           wait-on: http://localhost:8080
+      - name: build fail
+        uses: rjstone/discord-webhook-notify@v1
+        if: ${{ failure() || cancelled() }}
+        with:
+          severity: error
+          details: Build failed!
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
   deployment:
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-20.04
@@ -47,3 +54,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
+    - name: deploy success
+      uses: rjstone/discord-webhook-notify@v1
+      if: ${{ success() }}
+      with:
+        severity: info
+        details: New version deployed!
+        webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+    - name: deploy fail
+      uses: rjstone/discord-webhook-notify@v1
+      if: ${{ failure() || cancelled() }}
+      with:
+        severity: error
+        details: Deploy failed!
+        webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
