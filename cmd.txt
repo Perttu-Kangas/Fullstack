@@ -13,3 +13,5 @@ docker-compose -f docker-compose.dev.yml up -d
 docker-compose -f docker-compose.dev.yml down --volumes
 
 docker run -p 3000:3000 -v "$(pwd):/usr/src/app/" hello-front-dev
+
+docker-compose run debug-helper wget -O - http://app:3000
