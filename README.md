@@ -1,1 +1,0 @@
-# fullstack-osa10
