@@ -1,0 +1,10 @@
+- expo
+- expo-status-bar
+- react
+- react-native
+- react-native-web@~0.18.7
+- react-dom@18.2.0
+- @expo/webpack-config@^0.17.0
+
+Dev:
+- @babel/core
