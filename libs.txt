@@ -8,3 +8,10 @@
 
 Dev:
 - @babel/core
+- @babel/eslint-parser
+- eslint-plugin-react
+- eslint-plugin-react-native
+- react-native-debugger-open
+
+CMD:
+- react-native-debugger --no-sandbox (--no-sandbox to fix GPU error)
