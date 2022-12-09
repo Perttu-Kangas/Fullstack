@@ -1,24 +1,19 @@
-import { Text, Image, StyleSheet } from 'react-native'
+import { StyleSheet, View } from 'react-native'
+import RepositoryInfo from './RepositoryInfo.jsx'
+import RepositoryStats from './RepositoryStats'
 
-const styles = StyleSheet.create({
-  image: {
-    width: 50,
-    height: 50,
+const repoStyles = StyleSheet.create({
+  container: {
+    alignItems: 'stretch',
   },
 })
 
 const RepositoryItem = ({ repo }) => {
   return (
-    <>
-      <Image style={styles.image} source={{ uri: repo.ownerAvatarUrl }} />
-      <Text>Full name: {repo.fullName}</Text>
-      <Text>Description: {repo.description}</Text>
-      <Text>Language: {repo.language}</Text>
-      <Text>Stars: {repo.stargazersCount}</Text>
-      <Text>Forks: {repo.forksCount}</Text>
-      <Text>Reviews: {repo.reviewCount}</Text>
-      <Text>Rating: {repo.ratingAverage}</Text>
-    </>
+    <View style={repoStyles.container}>
+      <RepositoryInfo repo={repo} />
+      <RepositoryStats repo={repo} />
+    </View>
   )
 }
 
