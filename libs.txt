@@ -1,10 +1,8 @@
+Npm install:
 - expo
 - expo-status-bar
 - react
 - react-native
-- react-native-web@~0.18.7
-- react-dom@18.2.0
-- @expo/webpack-config@^0.17.0
 - react-router-native
 - formik
 - yup
@@ -12,7 +10,13 @@
 - graphql
 - @expo/metro-config
 
-Dev:
+Expo install:
+- react-native-web@~0.18.7
+- react-dom@18.2.0
+- @expo/webpack-config@^0.17.0
+- @react-native-async-storage/async-storage
+
+Npm install dev:
 - @babel/core
 - @babel/eslint-parser
 - eslint-plugin-react
