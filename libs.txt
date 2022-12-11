@@ -8,6 +8,9 @@
 - react-router-native
 - formik
 - yup
+- @apollo/client
+- graphql
+- @expo/metro-config
 
 Dev:
 - @babel/core

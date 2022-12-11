@@ -4,6 +4,7 @@ import RepositoryStats from './RepositoryStats'
 
 const repoStyles = StyleSheet.create({
   container: {
+    padding: 10,
     alignItems: 'stretch',
   },
 })

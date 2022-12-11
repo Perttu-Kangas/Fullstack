@@ -20,7 +20,11 @@ const infoStyles = StyleSheet.create({
   },
 
   infoContainer: {
-    flewDirection: 'column',
+    flexGrow: 1,
+    flexShrink: 1,
+  },
+
+  descriptionContainer: {
     flexGrow: 1,
   },
 
@@ -50,7 +54,7 @@ const RepositoryInfo = ({ repo }) => {
         <Text fontWeight='bold' fontSize='subheading'>
           {repo.fullName}
         </Text>
-        <Text>{repo.description}</Text>
+        <Text style={infoStyles.descriptionContainer}>{repo.description}</Text>
         <View style={infoStyles.languageContainer}>
           <Text style={infoStyles.language}>{repo.language}</Text>
         </View>
