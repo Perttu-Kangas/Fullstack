@@ -10,10 +10,8 @@ const styles = StyleSheet.create({
 
 const ItemSeparator = () => <View style={styles.separator} />
 
-const RepositoryList = () => {
+export const RepositoryListContainer = ({ repositories }) => {
   const renderItem = ({ item }) => <RepositoryItem repo={item} />
-
-  const { repositories } = useRepositories()
 
   const repositoryNodes = repositories
     ? repositories.edges.map((edge) => edge.node)
@@ -27,6 +25,12 @@ const RepositoryList = () => {
       keyExtractor={(item) => item.id}
     />
   )
+}
+
+const RepositoryList = () => {
+  const { repositories } = useRepositories()
+
+  return <RepositoryListContainer repositories={repositories} />
 }
 
 export default RepositoryList

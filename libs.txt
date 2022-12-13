@@ -22,6 +22,12 @@ Npm install dev:
 - eslint-plugin-react
 - eslint-plugin-react-native
 - react-native-debugger-open
+- jest
+- jest-expo
+- eslint-plugin-jest
+- react-test-renderer@18.2.0
+- @testing-library/react-native
+- @testing-library/jest-native
 
 CMD:
 - react-native-debugger --no-sandbox (--no-sandbox to fix GPU error)
