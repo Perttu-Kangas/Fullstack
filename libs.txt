@@ -9,6 +9,7 @@ Npm install:
 - @apollo/client
 - graphql
 - @expo/metro-config
+- date-fns
 
 Expo install:
 - react-native-web@~0.18.7

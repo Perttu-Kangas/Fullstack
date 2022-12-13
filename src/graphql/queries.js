@@ -19,7 +19,7 @@ export const GET_REPOSITORIES = gql`
 `;
 
 export const GET_REPOSITORY = gql`
-  query Repository($id: ID!) {
+  query ($id: ID!) {
     repository(id: $id) {
       ...repositoryBaseFields
       ratingAverage
@@ -28,6 +28,29 @@ export const GET_REPOSITORY = gql`
   }
 
   ${REPOSITORY_BASE_FIELDS}
+`;
+
+export const GET_REPOSITORY_REVIEWS = gql`
+  query ($id: ID!) {
+    repository(id: $id) {
+      id
+      fullName
+      reviews {
+        edges {
+          node {
+            id
+            text
+            rating
+            createdAt
+            user {
+              id
+              username
+            }
+          }
+        }
+      }
+    }
+  }
 `;
 
 export const GET_CURRENT_USER = gql`
