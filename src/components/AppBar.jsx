@@ -6,7 +6,7 @@ import Text from './Text'
 import theme from '../theme'
 
 import useSignOut from '../hooks/useSignOut'
-import { ME } from '../graphql/queries'
+import { GET_CURRENT_USER } from '../graphql/queries'
 import { useQuery } from '@apollo/client'
 
 const styles = StyleSheet.create({
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
 })
 
 const AppBar = () => {
-  const { data, loading } = useQuery(ME)
+  const { data, loading } = useQuery(GET_CURRENT_USER)
   const signOut = useSignOut()
   const loggedIn = !loading && data != undefined && data.me != null
 
