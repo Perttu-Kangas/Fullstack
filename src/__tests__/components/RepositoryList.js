@@ -49,7 +49,7 @@ describe('RepositoryList', () => {
         it('renders repository information correctly', () => {
             const { getAllByTestId } = render(<RepositoryListContainer repositories={repositories} />);
 
-            const [firstRepositoryItem, secondRepositoryItem] = getAllByTestId('repositoryItem');
+            const [firstRepositoryItem, secondRepositoryItem] = getAllByTestId('repositoryItemList');
 
             // name, description, language, forks count, stargazers count, rating average, and review count correctly
 

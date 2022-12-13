@@ -15,6 +15,7 @@ Expo install:
 - react-dom@18.2.0
 - @expo/webpack-config@^0.17.0
 - @react-native-async-storage/async-storage
+- expo-linking
 
 Npm install dev:
 - @babel/core
