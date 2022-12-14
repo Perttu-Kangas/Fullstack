@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
 
-  signin: {
+  create: {
     color: theme.colors.textWhite,
     backgroundColor: theme.colors.primary,
     borderRadius: 4,
@@ -31,7 +31,7 @@ const ReviewForm = ({ onSubmit }) => {
       <FormikTextInput name='rating' placeholder='Rating between 0 and 100' />
       <FormikTextInput name='text' placeholder='Review' />
       <Pressable onPress={onSubmit}>
-        <Text style={styles.signin}>Create a review</Text>
+        <Text style={styles.create}>Create a review</Text>
       </Pressable>
     </View>
   )
