@@ -52,7 +52,7 @@ const reviewStyles = StyleSheet.create({
     width: 45,
     height: 45,
     flexGrow: 0,
-    borderRadius: 30,
+    borderRadius: 45 / 2,
     borderWidth: 3,
     borderColor: theme.colors.primary,
     alignItems: 'center',
