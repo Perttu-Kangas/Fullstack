@@ -10,6 +10,8 @@ Npm install:
 - graphql
 - @expo/metro-config
 - date-fns
+- react-native-paper
+- react-native-safe-area-context
 
 Expo install:
 - react-native-web@~0.18.7
