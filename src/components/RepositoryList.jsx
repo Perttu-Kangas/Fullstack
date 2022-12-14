@@ -2,7 +2,7 @@ import { View, FlatList, StyleSheet } from 'react-native'
 import useRepositories from '../hooks/useRepositories'
 import RepositoryItemList from './RepositoryItemList'
 import { useState } from 'react'
-import { RadioButton, List } from 'react-native-paper'
+import { RadioButton, List, Searchbar } from 'react-native-paper'
 
 const styles = StyleSheet.create({
   separator: {
@@ -12,9 +12,10 @@ const styles = StyleSheet.create({
 
 const ItemSeparator = () => <View style={styles.separator} />
 
-const RepositorySorter = ({ setOrder }) => {
+const RepositorySorter = ({ setOrder, setKeyword }) => {
   const [expanded, setExpanded] = useState(true)
   const [value, setValue] = useState('Latest repositories')
+  const [searchQuery, setSearchQuery] = useState('')
 
   const handlePress = () => setExpanded(!expanded)
 
@@ -38,31 +39,47 @@ const RepositorySorter = ({ setOrder }) => {
     }
   }
 
+  const onChangeSearch = (query) => {
+    setSearchQuery(query)
+    setKeyword(query)
+  }
+
   return (
-    <List.Section>
-      <List.Accordion title={value} onPress={handlePress}>
-        <RadioButton.Group
-          onValueChange={(newValue) => onSortingPress(newValue)}
-          value={value}>
-          <RadioButton.Item
-            label='Latest repositories'
-            value='Latest repositories'
-          />
-          <RadioButton.Item
-            label='Highest rated repositories'
-            value='Highest rated repositories'
-          />
-          <RadioButton.Item
-            label='Lowest rated repositories'
-            value='Lowest rated repositories'
-          />
-        </RadioButton.Group>
-      </List.Accordion>
-    </List.Section>
+    <View>
+      <Searchbar
+        placeholder='Search'
+        onChangeText={onChangeSearch}
+        value={searchQuery}
+      />
+      <List.Section>
+        <List.Accordion title={value} onPress={handlePress}>
+          <RadioButton.Group
+            onValueChange={(newValue) => onSortingPress(newValue)}
+            value={value}>
+            <RadioButton.Item
+              label='Latest repositories'
+              value='Latest repositories'
+            />
+            <RadioButton.Item
+              label='Highest rated repositories'
+              value='Highest rated repositories'
+            />
+            <RadioButton.Item
+              label='Lowest rated repositories'
+              value='Lowest rated repositories'
+            />
+          </RadioButton.Group>
+        </List.Accordion>
+      </List.Section>
+    </View>
   )
 }
 
-export const RepositoryListContainer = ({ repositories, setOrder }) => {
+export const RepositoryListContainer = ({
+  repositories,
+  setOrder,
+  setKeyword,
+}) => {
   const renderItem = ({ item }) => <RepositoryItemList repo={item} />
 
   const repositoryNodes = repositories
@@ -75,7 +92,9 @@ export const RepositoryListContainer = ({ repositories, setOrder }) => {
       ItemSeparatorComponent={ItemSeparator}
       renderItem={renderItem}
       keyExtractor={(item) => item.id}
-      ListHeaderComponent={() => <RepositorySorter setOrder={setOrder} />}
+      ListHeaderComponent={() => (
+        <RepositorySorter setOrder={setOrder} setKeyword={setKeyword} />
+      )}
     />
   )
 }
@@ -85,11 +104,16 @@ const RepositoryList = () => {
     orderDirection: 'DESC',
     orderBy: 'RATING_AVERAGE',
   })
+  const [keyword, setKeyword] = useState('')
 
-  const { repositories } = useRepositories(order)
+  const { repositories } = useRepositories(order, keyword)
 
   return (
-    <RepositoryListContainer repositories={repositories} setOrder={setOrder} />
+    <RepositoryListContainer
+      repositories={repositories}
+      setOrder={setOrder}
+      setKeyword={setKeyword}
+    />
   )
 }
 
