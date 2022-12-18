@@ -80,9 +80,31 @@ export const GET_REPOSITORY_REVIEWS = gql`
 `;
 
 export const GET_CURRENT_USER = gql`
-  query {
+  query ($includeReviews: Boolean = false) {
     me {
       ...userBaseFields
+      reviews @include(if: $includeReviews) {
+        edges {
+          node {
+            id
+            text
+            rating
+            createdAt
+            repositoryId
+            user {
+              id
+              username
+            }
+          }
+          cursor
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+          hasPreviousPage
+          startCursor
+        }
+      }
     }
   }
 
