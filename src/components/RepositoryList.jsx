@@ -79,6 +79,7 @@ export const RepositoryListContainer = ({
   repositories,
   setOrder,
   setKeyword,
+  onEndReach,
 }) => {
   const renderItem = ({ item }) => <RepositoryItemList repo={item} />
 
@@ -95,6 +96,8 @@ export const RepositoryListContainer = ({
       ListHeaderComponent={() => (
         <RepositorySorter setOrder={setOrder} setKeyword={setKeyword} />
       )}
+      onEndReached={onEndReach}
+      onEndReachedThreshold={0.5}
     />
   )
 }
@@ -106,13 +109,22 @@ const RepositoryList = () => {
   })
   const [keyword, setKeyword] = useState('')
 
-  const { repositories } = useRepositories(order, keyword)
+  const { repositories, fetchMore } = useRepositories({
+    order,
+    keyword,
+    first: 8,
+  })
+
+  const onEndReach = () => {
+    fetchMore()
+  }
 
   return (
     <RepositoryListContainer
       repositories={repositories}
       setOrder={setOrder}
       setKeyword={setKeyword}
+      onEndReach={onEndReach}
     />
   )
 }

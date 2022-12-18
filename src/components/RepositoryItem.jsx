@@ -83,7 +83,14 @@ const ItemSeparator = () => <View style={repoStyles.separator} />
 const RepositoryItem = () => {
   const { id } = useParams()
   const { repository } = useRepository(id)
-  const { reviews } = useRepositoryReview(id)
+  const { reviews, fetchMore } = useRepositoryReview({
+    id,
+    first: 8,
+  })
+
+  const onEndReach = () => {
+    fetchMore()
+  }
 
   const reviewNodes = reviews ? reviews.edges.map((edge) => edge.node) : []
 
@@ -98,6 +105,8 @@ const RepositoryItem = () => {
       keyExtractor={({ id }) => id}
       ListHeaderComponent={() => <RepositoryItemInfo repository={repository} />}
       ItemSeparatorComponent={ItemSeparator}
+      onEndReached={onEndReach}
+      onEndReachedThreshold={0.5}
     />
   )
 }
