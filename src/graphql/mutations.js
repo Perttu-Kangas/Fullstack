@@ -1,6 +1,10 @@
 import { gql } from '@apollo/client';
 
-import { USER_BASE_FIELDS } from './fragments';
+import {
+  USER_BASE_FIELDS,
+  REVIEW_BASE_FIELDS,
+  REPOSITORY_BASE_FIELDS,
+} from './fragments';
 
 export const AUTHENTICATE = gql`
   mutation authorize($credentials: AuthenticateInput!) {
@@ -16,22 +20,30 @@ export const AUTHENTICATE = gql`
 `;
 
 export const CREATE_REVIEW = gql`
-  mutation CreateReview($review: CreateReviewInput!) {
+  mutation createReview($review: CreateReviewInput!) {
     createReview(review: $review) {
-      id
+      ...reviewBaseFields
       repository {
-        id
-        fullName
+        ...repositoryBaseFields
       }
     }
   }
+
+  ${REVIEW_BASE_FIELDS}
+  ${REPOSITORY_BASE_FIELDS}
 `;
 
 export const CREATE_USER = gql`
-  mutation CreateUser($user: CreateUserInput!) {
+  mutation createUser($user: CreateUserInput!) {
     createUser(user: $user) {
-      id
-      username
+      ...userBaseFields
     }
+  }
+  ${USER_BASE_FIELDS}
+`;
+
+export const DELETE_REVIEW = gql`
+  mutation deleteReview($id: ID!) {
+    deleteReview(id: $id)
   }
 `;

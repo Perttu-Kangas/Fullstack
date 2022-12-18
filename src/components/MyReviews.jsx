@@ -1,70 +1,108 @@
-import { StyleSheet, View, FlatList } from 'react-native'
-import Text from './Text.jsx'
-import theme from '../theme.js'
-import { format } from 'date-fns'
-import { GET_CURRENT_USER } from '../graphql/queries'
-import { useQuery } from '@apollo/client'
+import { FlatList, View, StyleSheet, Alert } from 'react-native'
+import { useMutation } from '@apollo/client'
+import { useNavigate } from 'react-router-native'
 
-const reviewStyles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    flexDirection: 'row',
+import ReviewItem from './ReviewItem'
+import Button from './Button'
+import useCurrentUser from '../hooks/useCurrentUser'
+import { DELETE_REVIEW } from '../graphql/mutations'
+
+const styles = StyleSheet.create({
+  reviewItemWrapper: {
+    padding: 15,
+    backgroundColor: 'white',
   },
-
-  ratingContainer: {
-    margin: 5,
-    width: 45,
-    height: 45,
-    flexGrow: 0,
-    borderRadius: 45 / 2,
-    borderWidth: 3,
-    borderColor: theme.colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
   separator: {
     height: 10,
   },
+  actionsContainer: {
+    marginTop: 15,
+    flexDirection: 'row',
+  },
+  actionButton: {
+    flexGrow: 1,
+    marginRight: 15,
+  },
+  lastActionButton: {
+    marginRight: 0,
+  },
 })
 
-const ReviewItem = ({ review }) => {
-  return (
-    <View style={reviewStyles.container}>
-      <View style={reviewStyles.ratingContainer}>
-        <Text color='primary'>{review.rating}</Text>
-      </View>
+const DeleteReviewButton = ({ onPress, ...props }) => {
+  const alertButtons = [
+    {
+      text: 'Cancel',
+      style: 'cancel',
+    },
+    {
+      text: 'Delete',
+      onPress: () => onPress(),
+    },
+  ]
 
-      <View>
-        <Text fontWeight='bold' fontSize='subheading'>
-          {review.user.username}
-        </Text>
-        <Text>{format(new Date(review.createdAt), 'dd.MM.yyyy')}</Text>
-        <Text>{review.text}</Text>
+  const deleteWithConfirmation = () => {
+    Alert.alert(
+      'Delete review',
+      'Are you sure you want to delete this review?',
+      alertButtons,
+      { cancelable: false }
+    )
+  }
+
+  return (
+    <Button onPress={deleteWithConfirmation} color='error' {...props}>
+      Delete review
+    </Button>
+  )
+}
+
+const ReviewItemWithActions = ({ review, onDelete }) => {
+  const navigate = useNavigate()
+
+  return (
+    <View style={styles.reviewItemWrapper}>
+      <ReviewItem review={review} title={review.repository.fullName} />
+      <View style={styles.actionsContainer}>
+        <Button
+          style={styles.actionButton}
+          onPress={() => navigate(`/repositories/${review.repository.id}`)}>
+          View repository
+        </Button>
+
+        <DeleteReviewButton
+          onPress={onDelete}
+          style={[styles.actionButton, styles.lastActionButton]}
+        />
       </View>
     </View>
   )
 }
 
-const ItemSeparator = () => <View style={reviewStyles.separator} />
+const ItemSeparator = () => <View style={styles.separator} />
 
 const MyReviews = () => {
-  const { data } = useQuery(GET_CURRENT_USER, {
-    variables: {
-      includeReviews: true,
-    },
+  const { currentUser, refetch } = useCurrentUser({
+    includeReviews: true,
   })
-  const reviews = data?.me.reviews
-  const reviewNodes = reviews ? reviews.edges.map((edge) => edge.node) : []
 
-  if (!reviews) {
-    return <Text>Loading...</Text>
+  const [deleteReview] = useMutation(DELETE_REVIEW)
+  const reviewEdges = currentUser?.reviews.edges ?? []
+  const reviewNodes = reviewEdges.map(({ node }) => node)
+
+  const onDelete = async (id) => {
+    await deleteReview({ variables: { id } })
+    refetch()
   }
 
   return (
     <FlatList
       data={reviewNodes}
-      renderItem={({ item }) => <ReviewItem review={item} />}
+      renderItem={({ item }) => (
+        <ReviewItemWithActions
+          review={item}
+          onDelete={() => onDelete(item.id)}
+        />
+      )}
       keyExtractor={({ id }) => id}
       ItemSeparatorComponent={ItemSeparator}
     />

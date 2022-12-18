@@ -1,56 +1,82 @@
-import { Link } from 'react-router-native'
-import { View, StyleSheet, ScrollView, Pressable } from 'react-native'
-
+import { View, ScrollView, Pressable, StyleSheet } from 'react-native'
 import Constants from 'expo-constants'
-import Text from './Text'
-import theme from '../theme'
+import { Link } from 'react-router-native'
+import { useApolloClient } from '@apollo/client'
+import { useNavigate } from 'react-router-native'
 
-import useSignOut from '../hooks/useSignOut'
-import { GET_CURRENT_USER } from '../graphql/queries'
-import { useQuery } from '@apollo/client'
+import theme from '../theme'
+import Text from './Text'
+import useAuthStorage from '../hooks/useAuthStorage'
+import useCurrentUser from '../hooks/useCurrentUser'
 
 const styles = StyleSheet.create({
   container: {
     paddingTop: Constants.statusBarHeight,
-    backgroundColor: theme.colors.textPrimary,
+    backgroundColor: theme.colors.appBarBackground,
   },
-
-  link: {
-    padding: 15,
+  scrollView: {
+    flexDirection: 'row',
+  },
+  tabTouchable: {
+    flexGrow: 0,
+  },
+  tabContainer: {
+    paddingHorizontal: 15,
+    paddingVertical: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tabText: {
+    color: 'white',
   },
 })
 
+const AppBarTab = ({ children, to, ...props }) => {
+  const content = (
+    <View style={styles.tabContainer} {...props}>
+      <Text fontWeight='bold' style={styles.tabText}>
+        {children}
+      </Text>
+    </View>
+  )
+
+  return to ? (
+    <Link to={to} {...props}>
+      {content}
+    </Link>
+  ) : (
+    <Pressable {...props}>{content}</Pressable>
+  )
+}
+
 const AppBar = () => {
-  const { data, loading } = useQuery(GET_CURRENT_USER)
-  const signOut = useSignOut()
-  const loggedIn = !loading && data != undefined && data.me != null
+  const apolloClient = useApolloClient()
+  const authStorage = useAuthStorage()
+  const navigate = useNavigate()
+
+  const { currentUser } = useCurrentUser()
+
+  const onSignOut = async () => {
+    await authStorage.removeAccessToken()
+    apolloClient.resetStore()
+    navigate('/')
+  }
 
   return (
     <View style={styles.container}>
-      <ScrollView horizontal>
-        <Link to='/' style={styles.link}>
-          <Text color='textWhite'>Repositories</Text>
-        </Link>
-        {loggedIn ? (
+      <ScrollView style={styles.scrollView} horizontal>
+        <AppBarTab to='/'>Repositories</AppBarTab>
+        {currentUser ? (
           <>
-            <Link to='/createreview' style={styles.link}>
-              <Text color='textWhite'>Create a review</Text>
-            </Link>
-            <Link to='/myreviews' style={styles.link}>
-              <Text color='textWhite'>My reviews</Text>
-            </Link>
-            <Pressable style={styles.link} onPress={() => signOut()}>
-              <Text color='textWhite'>Sign out</Text>
-            </Pressable>
+            <AppBarTab to='/create-review'>Create a review</AppBarTab>
+            <AppBarTab to='/my-reviews'>My reviews</AppBarTab>
+            <AppBarTab onPress={onSignOut}>Sign out</AppBarTab>
           </>
         ) : (
           <>
-            <Link to='/signin' style={styles.link}>
-              <Text color='textWhite'>Sign in</Text>
-            </Link>
-            <Link to='/signup' style={styles.link}>
-              <Text color='textWhite'>Sign up</Text>
-            </Link>
+            <AppBarTab to='/sign-in'>Sign in</AppBarTab>
+            <AppBarTab to='/sign-up'>Sign up</AppBarTab>
           </>
         )}
       </ScrollView>

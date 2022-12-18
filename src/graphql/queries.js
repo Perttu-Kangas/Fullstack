@@ -1,112 +1,111 @@
 import { gql } from '@apollo/client';
 
-import { REPOSITORY_BASE_FIELDS, USER_BASE_FIELDS } from './fragments';
+import {
+  REPOSITORY_BASE_FIELDS,
+  USER_BASE_FIELDS,
+  REVIEW_BASE_FIELDS,
+  PAGE_INFO_FIELDS,
+} from './fragments';
 
 export const GET_REPOSITORIES = gql`
-  query ($orderDirection: OrderDirection, 
-    $orderBy: AllRepositoriesOrderBy, 
-    $searchKeyword: String, 
-    $after: String, 
-    $first: Int) {
+  query getRepositories(
+    $orderBy: AllRepositoriesOrderBy
+    $orderDirection: OrderDirection
+    $first: Int
+    $after: String
+    $searchKeyword: String
+  ) {
     repositories(
-      orderDirection: $orderDirection, 
-      orderBy: $orderBy, 
-      searchKeyword: $searchKeyword, 
-      after: $after, 
+      orderBy: $orderBy
+      orderDirection: $orderDirection
       first: $first
-      ) {
+      after: $after
+      searchKeyword: $searchKeyword
+    ) {
+      totalCount
       edges {
-        cursor
         node {
           ...repositoryBaseFields
           ratingAverage
           reviewCount
         }
+        cursor
       }
       pageInfo {
-        endCursor
-        hasNextPage
-        hasPreviousPage
-        startCursor
+        ...pageInfoFields
       }
     }
   }
 
   ${REPOSITORY_BASE_FIELDS}
-`;
-
-export const GET_REPOSITORY = gql`
-  query ($id: ID!) {
-    repository(id: $id) {
-      ...repositoryBaseFields
-      ratingAverage
-      reviewCount
-    }
-  }
-
-  ${REPOSITORY_BASE_FIELDS}
-`;
-
-export const GET_REPOSITORY_REVIEWS = gql`
-  query ($id: ID!, $after: String, $first: Int) {
-    repository(id: $id) {
-      id
-      fullName
-      reviews (after: $after, first: $first) {
-        totalCount
-        edges {
-          cursor
-          node {
-            id
-            text
-            rating
-            createdAt
-            repositoryId
-            user {
-              id
-              username
-            }
-          }
-        }
-        pageInfo {
-          endCursor
-          hasNextPage
-          hasPreviousPage
-          startCursor
-        }
-      }
-    }
-  }
+  ${PAGE_INFO_FIELDS}
 `;
 
 export const GET_CURRENT_USER = gql`
-  query ($includeReviews: Boolean = false) {
+  query getCurrentUser(
+    $includeReviews: Boolean = false
+    $reviewsFirst: Int
+    $reviewsAfter: String
+  ) {
     me {
       ...userBaseFields
-      reviews @include(if: $includeReviews) {
+      reviews(first: $reviewsFirst, after: $reviewsAfter)
+        @include(if: $includeReviews) {
+        totalCount
         edges {
           node {
-            id
-            text
-            rating
-            createdAt
-            repositoryId
+            ...reviewBaseFields
             user {
-              id
-              username
+              ...userBaseFields
+            }
+            repository {
+              ...repositoryBaseFields
             }
           }
           cursor
         }
         pageInfo {
-          endCursor
-          hasNextPage
-          hasPreviousPage
-          startCursor
+          ...pageInfoFields
         }
       }
     }
   }
 
   ${USER_BASE_FIELDS}
+  ${PAGE_INFO_FIELDS}
+  ${REPOSITORY_BASE_FIELDS}
+  ${REVIEW_BASE_FIELDS}
+`;
+
+export const GET_REPOSITORY = gql`
+  query getRepository($id: ID!, $reviewsFirst: Int, $reviewsAfter: String) {
+    repository(id: $id) {
+      ...repositoryBaseFields
+      ratingAverage
+      reviewCount
+      reviews(first: $reviewsFirst, after: $reviewsAfter) {
+        totalCount
+        edges {
+          node {
+            ...reviewBaseFields
+            user {
+              ...userBaseFields
+            }
+            repository {
+              ...repositoryBaseFields
+            }
+          }
+          cursor
+        }
+        pageInfo {
+          ...pageInfoFields
+        }
+      }
+    }
+  }
+
+  ${REPOSITORY_BASE_FIELDS}
+  ${REVIEW_BASE_FIELDS}
+  ${USER_BASE_FIELDS}
+  ${PAGE_INFO_FIELDS}
 `;

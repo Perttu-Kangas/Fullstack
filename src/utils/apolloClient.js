@@ -1,14 +1,13 @@
 import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
-import Constants from 'expo-constants';
 import { setContext } from '@apollo/client/link/context';
 import { relayStylePagination } from '@apollo/client/utilities';
+import Constants from 'expo-constants';
 
-const { apollouri } = Constants.manifest.extra;
+const { apolloUri } = Constants.manifest.extra;
 
 const httpLink = createHttpLink({
-    uri: apollouri,
+    uri: apolloUri,
 });
-
 
 const cache = new InMemoryCache({
     typePolicies: {
@@ -25,11 +24,11 @@ const cache = new InMemoryCache({
     },
 });
 
-
 const createApolloClient = (authStorage) => {
     const authLink = setContext(async (_, { headers }) => {
         try {
             const accessToken = await authStorage.getAccessToken();
+
             return {
                 headers: {
                     ...headers,
@@ -38,11 +37,13 @@ const createApolloClient = (authStorage) => {
             };
         } catch (e) {
             console.log(e);
+
             return {
                 headers,
             };
         }
     });
+
     return new ApolloClient({
         link: authLink.concat(httpLink),
         cache,

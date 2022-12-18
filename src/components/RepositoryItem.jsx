@@ -1,113 +1,133 @@
-import { StyleSheet, View, Pressable, FlatList } from 'react-native'
-import RepositoryInfo from './RepositoryInfo.jsx'
-import RepositoryStats from './RepositoryStats'
-import { useParams } from 'react-router-native'
-import useRepository from '../hooks/useRepository.js'
-import useRepositoryReview from '../hooks/useRepositoryReviews.js'
-import Text from './Text.jsx'
-import { openURL } from 'expo-linking'
-import theme from '../theme.js'
-import { format } from 'date-fns'
+import { View, Image, StyleSheet } from 'react-native'
+import * as Linking from 'expo-linking'
 
-const repoStyles = StyleSheet.create({
+import theme from '../theme'
+import Text from './Text'
+import Button from './Button'
+import formatInThousands from '../utils/formatInThousands'
+
+const styles = StyleSheet.create({
   container: {
-    padding: 10,
-    alignItems: 'stretch',
+    backgroundColor: 'white',
+    padding: 15,
   },
-
-  open: {
-    color: theme.colors.textWhite,
-    backgroundColor: theme.colors.primary,
-    borderRadius: 5,
-    padding: 10,
-    textAlign: 'center',
-    marginTop: 10,
-  },
-
-  separator: {
-    height: 10,
-  },
-})
-
-const RepositoryItemInfo = ({ repository }) => {
-  return (
-    <View testID='repositoryItem' style={repoStyles.container}>
-      <RepositoryInfo repo={repository} />
-      <RepositoryStats repo={repository} />
-      <Pressable onPress={() => openURL(repository.url)}>
-        <Text style={repoStyles.open}>Open in GitHub</Text>
-      </Pressable>
-    </View>
-  )
-}
-
-const reviewStyles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
+  topContainer: {
     flexDirection: 'row',
+    marginBottom: 15,
   },
-
-  ratingContainer: {
-    margin: 5,
+  bottomContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  avatarContainer: {
+    flexGrow: 0,
+    marginRight: 20,
+  },
+  contentContainer: {
+    flexGrow: 1,
+    flexShrink: 1,
+  },
+  nameText: {
+    marginBottom: 5,
+  },
+  descriptionText: {
+    flexGrow: 1,
+  },
+  avatar: {
     width: 45,
     height: 45,
+    borderRadius: theme.roundness,
+  },
+  countItem: {
     flexGrow: 0,
-    borderRadius: 45 / 2,
-    borderWidth: 3,
-    borderColor: theme.colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: 15,
+  },
+  countItemCount: {
+    marginBottom: 5,
+  },
+  languageContainer: {
+    marginTop: 10,
+    flexDirection: 'row',
+  },
+  languageText: {
+    color: 'white',
+    backgroundColor: theme.colors.primary,
+    borderRadius: theme.roundness,
+    flexGrow: 0,
+    paddingVertical: 3,
+    paddingHorizontal: 6,
+  },
+  githubButton: {
+    marginTop: 15,
   },
 })
 
-const ReviewItem = ({ review }) => {
+const CountItem = ({ label, count, ...props }) => {
   return (
-    <View style={reviewStyles.container}>
-      <View style={reviewStyles.ratingContainer}>
-        <Text color='primary'>{review.rating}</Text>
-      </View>
-
-      <View>
-        <Text fontWeight='bold' fontSize='subheading'>
-          {review.user.username}
-        </Text>
-        <Text>{format(new Date(review.createdAt), 'dd.MM.yyyy')}</Text>
-        <Text>{review.text}</Text>
-      </View>
+    <View style={styles.countItem}>
+      <Text style={styles.countItemCount} fontWeight='bold' {...props}>
+        {formatInThousands(count)}
+      </Text>
+      <Text color='textSecondary'>{label}</Text>
     </View>
   )
 }
 
-const ItemSeparator = () => <View style={repoStyles.separator} />
+const RepositoryItem = ({ repository, showGithubLink = false, ...props }) => {
+  const {
+    fullName,
+    description,
+    language,
+    forksCount,
+    stargazersCount,
+    ratingAverage,
+    reviewCount,
+    ownerAvatarUrl,
+    url,
+  } = repository
 
-const RepositoryItem = () => {
-  const { id } = useParams()
-  const { repository } = useRepository(id)
-  const { reviews, fetchMore } = useRepositoryReview({
-    id,
-    first: 8,
-  })
-
-  const onEndReach = () => {
-    fetchMore()
-  }
-
-  const reviewNodes = reviews ? reviews.edges.map((edge) => edge.node) : []
-
-  if (!repository || !reviews) {
-    return <Text>Loading...</Text>
+  const onGithubLinkClick = () => {
+    Linking.openURL(url)
   }
 
   return (
-    <FlatList
-      data={reviewNodes}
-      renderItem={({ item }) => <ReviewItem review={item} />}
-      keyExtractor={({ id }) => id}
-      ListHeaderComponent={() => <RepositoryItemInfo repository={repository} />}
-      ItemSeparatorComponent={ItemSeparator}
-      onEndReached={onEndReach}
-      onEndReachedThreshold={0.5}
-    />
+    <View style={styles.container} testID='repositoryItem' {...props}>
+      <View style={styles.topContainer}>
+        <View style={styles.avatarContainer}>
+          <Image source={{ uri: ownerAvatarUrl }} style={styles.avatar} />
+        </View>
+        <View style={styles.contentContainer}>
+          <Text
+            style={styles.nameText}
+            fontWeight='bold'
+            fontSize='subheading'
+            numberOfLines={1}>
+            {fullName}
+          </Text>
+          <Text style={styles.descriptionText} color='textSecondary'>
+            {description}
+          </Text>
+          {language ? (
+            <View style={styles.languageContainer}>
+              <Text style={styles.languageText}>{language}</Text>
+            </View>
+          ) : null}
+        </View>
+      </View>
+      <View style={styles.bottomContainer}>
+        <CountItem count={stargazersCount} label='Stars' />
+        <CountItem count={forksCount} label='Forks' />
+        <CountItem count={reviewCount} label='Reviews' />
+        <CountItem count={ratingAverage} label='Rating' />
+      </View>
+      {showGithubLink && url && (
+        <Button style={styles.githubButton} onPress={onGithubLinkClick}>
+          Open in GitHub
+        </Button>
+      )}
+    </View>
   )
 }
 

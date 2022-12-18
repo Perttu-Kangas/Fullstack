@@ -1,118 +1,129 @@
-import { View, FlatList, StyleSheet } from 'react-native'
+import React, { useState } from 'react'
+import { FlatList, View, StyleSheet, Pressable } from 'react-native'
+import { useNavigate } from 'react-router-native'
+import { Searchbar } from 'react-native-paper'
+import { useDebounce } from 'use-debounce'
+
+import RepositoryItem from './RepositoryItem'
 import useRepositories from '../hooks/useRepositories'
-import RepositoryItemList from './RepositoryItemList'
-import { useState } from 'react'
-import { RadioButton, List, Searchbar } from 'react-native-paper'
+import Picker from './Picker'
 
 const styles = StyleSheet.create({
   separator: {
     height: 10,
   },
+  headerContainer: {
+    padding: 15,
+  },
+  searchContainer: {
+    marginBottom: 15,
+  },
 })
 
 const ItemSeparator = () => <View style={styles.separator} />
 
-const RepositorySorter = ({ setOrder, setKeyword }) => {
-  const [expanded, setExpanded] = useState(true)
-  const [value, setValue] = useState('Latest repositories')
-  const [searchQuery, setSearchQuery] = useState('')
+const orderByOptions = [
+  { label: 'Latest repositories', value: 'latest' },
+  {
+    label: 'Highest rated repositories',
+    value: 'highestRating',
+  },
+  {
+    label: 'Lowest rated repositories',
+    value: 'lowestRating',
+  },
+]
 
-  const handlePress = () => setExpanded(!expanded)
+const variablesByOrderBy = {
+  latest: {
+    orderBy: 'CREATED_AT',
+    orderDirection: 'DESC',
+  },
+  highestRating: {
+    orderBy: 'RATING_AVERAGE',
+    orderDirection: 'DESC',
+  },
+  lowestRating: {
+    orderBy: 'RATING_AVERAGE',
+    orderDirection: 'ASC',
+  },
+}
 
-  const onSortingPress = (value) => {
-    setValue(value)
-    if (value === 'Highest rated repositories') {
-      setOrder({
-        orderDirection: 'DESC',
-        orderBy: 'RATING_AVERAGE',
-      })
-    } else if (value === 'Lowest rated repositories') {
-      setOrder({
-        orderDirection: 'ASC',
-        orderBy: 'RATING_AVERAGE',
-      })
-    } else {
-      setOrder({
-        orderDirection: 'DESC',
-        orderBy: 'CREATED_AT',
-      })
-    }
-  }
-
-  const onChangeSearch = (query) => {
-    setSearchQuery(query)
-    setKeyword(query)
-  }
-
+const RepositoryListHeader = ({
+  onOrderByChange,
+  orderBy,
+  searchKeyword,
+  onSearchKeywordChange,
+}) => {
   return (
-    <View>
-      <Searchbar
-        placeholder='Search'
-        onChangeText={onChangeSearch}
-        value={searchQuery}
+    <View style={styles.headerContainer}>
+      <View style={styles.searchContainer}>
+        <Searchbar
+          placeholder='Search repositories'
+          value={searchKeyword}
+          onChangeText={onSearchKeywordChange}
+        />
+      </View>
+      <Picker
+        onChange={onOrderByChange}
+        value={orderBy}
+        options={orderByOptions}
       />
-      <List.Section>
-        <List.Accordion title={value} onPress={handlePress}>
-          <RadioButton.Group
-            onValueChange={(newValue) => onSortingPress(newValue)}
-            value={value}>
-            <RadioButton.Item
-              label='Latest repositories'
-              value='Latest repositories'
-            />
-            <RadioButton.Item
-              label='Highest rated repositories'
-              value='Highest rated repositories'
-            />
-            <RadioButton.Item
-              label='Lowest rated repositories'
-              value='Lowest rated repositories'
-            />
-          </RadioButton.Group>
-        </List.Accordion>
-      </List.Section>
     </View>
   )
 }
 
-export const RepositoryListContainer = ({
-  repositories,
-  setOrder,
-  setKeyword,
-  onEndReach,
-}) => {
-  const renderItem = ({ item }) => <RepositoryItemList repo={item} />
+export class RepositoryListContainer extends React.Component {
+  renderHeader = () => {
+    const { onOrderByChange, orderBy, searchKeyword, onSearchKeywordChange } =
+      this.props
 
-  const repositoryNodes = repositories
-    ? repositories.edges.map((edge) => edge.node)
-    : []
+    return (
+      <RepositoryListHeader
+        onOrderByChange={onOrderByChange}
+        orderBy={orderBy}
+        searchKeyword={searchKeyword}
+        onSearchKeywordChange={onSearchKeywordChange}
+      />
+    )
+  }
 
-  return (
-    <FlatList
-      data={repositoryNodes}
-      ItemSeparatorComponent={ItemSeparator}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.id}
-      ListHeaderComponent={() => (
-        <RepositorySorter setOrder={setOrder} setKeyword={setKeyword} />
-      )}
-      onEndReached={onEndReach}
-      onEndReachedThreshold={0.5}
-    />
-  )
+  render() {
+    const { repositories, onEndReach, onRepositoryPress } = this.props
+
+    const repositoryNodes = repositories
+      ? repositories.edges.map((edge) => edge.node)
+      : []
+
+    return (
+      <FlatList
+        data={repositoryNodes}
+        keyExtractor={({ id }) => id}
+        renderItem={({ item }) => (
+          <Pressable key={item.id} onPress={() => onRepositoryPress(item.id)}>
+            <RepositoryItem repository={item} />
+          </Pressable>
+        )}
+        ItemSeparatorComponent={ItemSeparator}
+        ListHeaderComponent={this.renderHeader}
+        onEndReached={onEndReach}
+        onEndReachedThreshold={0.5}
+        initialNumToRender={8}
+      />
+    )
+  }
 }
 
 const RepositoryList = () => {
-  const [order, setOrder] = useState({
-    orderDirection: 'DESC',
-    orderBy: 'RATING_AVERAGE',
-  })
-  const [keyword, setKeyword] = useState('')
+  const navigate = useNavigate()
+  const [orderBy, setOrderBy] = useState('latest')
+  const [searchKeyword, setSearchKeyword] = useState('')
+  const [debouncedSearchKeyword] = useDebounce(searchKeyword, 500)
 
   const { repositories, fetchMore } = useRepositories({
-    order,
-    keyword,
     first: 8,
+    ...variablesByOrderBy[orderBy],
+    searchKeyword: debouncedSearchKeyword,
   })
 
   const onEndReach = () => {
@@ -122,9 +133,16 @@ const RepositoryList = () => {
   return (
     <RepositoryListContainer
       repositories={repositories}
-      setOrder={setOrder}
-      setKeyword={setKeyword}
+      orderBy={orderBy}
+      onOrderByChange={(newOrderBy) => {
+        setOrderBy(newOrderBy)
+      }}
       onEndReach={onEndReach}
+      searchKeyword={searchKeyword}
+      onSearchKeywordChange={(keyword) => setSearchKeyword(keyword)}
+      onRepositoryPress={(id) => {
+        navigate(`/repositories/${id}`)
+      }}
     />
   )
 }

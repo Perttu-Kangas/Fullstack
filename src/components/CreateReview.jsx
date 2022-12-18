@@ -1,93 +1,94 @@
-import Text from './Text'
-import FormikTextInput from './FormikTextInput'
-import { Pressable, View, StyleSheet } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { Formik } from 'formik'
-import theme from '../theme'
 import * as yup from 'yup'
 import { useNavigate } from 'react-router-native'
 import { useMutation } from '@apollo/client'
+
+import Button from './Button'
+import FormikTextInput from './FormikTextInput'
 import { CREATE_REVIEW } from '../graphql/mutations'
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    backgroundColor: 'white',
+    padding: 15,
   },
-
-  create: {
-    color: theme.colors.textWhite,
-    backgroundColor: theme.colors.primary,
-    borderRadius: 4,
-    padding: 10,
-    margin: 5,
-    textAlign: 'center',
+  fieldContainer: {
+    marginBottom: 15,
   },
 })
 
-const ReviewForm = ({ onSubmit }) => {
+const initialValues = {
+  repositoryName: '',
+  ownerName: '',
+  rating: '',
+  text: '',
+}
+
+const validationSchema = yup.object().shape({
+  repositoryName: yup.string().required('Repository name is required'),
+  ownerName: yup.string().required('Repository owner name is required'),
+  rating: yup
+    .number('Rating must be a number')
+    .min(0, 'Rating must be greater or equal to 0')
+    .max(100, 'Rating must be less or equal to 100')
+    .required('Rating is required'),
+  text: yup.string(),
+})
+
+const CreateReviewForm = ({ onSubmit }) => {
   return (
     <View style={styles.container}>
-      <FormikTextInput name='ownerName' placeholder='Repository owner name' />
-      <FormikTextInput name='repositoryName' placeholder='Repository name' />
-      <FormikTextInput name='rating' placeholder='Rating between 0 and 100' />
-      <FormikTextInput name='text' placeholder='Review' />
-      <Pressable onPress={onSubmit}>
-        <Text style={styles.create}>Create a review</Text>
-      </Pressable>
+      <View style={styles.fieldContainer}>
+        <FormikTextInput placeholder='Repository owner name' name='ownerName' />
+      </View>
+
+      <View style={styles.fieldContainer}>
+        <FormikTextInput placeholder='Repository name' name='repositoryName' />
+      </View>
+
+      <View style={styles.fieldContainer}>
+        <FormikTextInput
+          placeholder='Rating between 0 and 100'
+          keyboardType='numeric'
+          name='rating'
+        />
+      </View>
+
+      <View style={styles.fieldContainer}>
+        <FormikTextInput placeholder='Review' name='text' multiline />
+      </View>
+
+      <Button onPress={onSubmit}>Create a review</Button>
     </View>
   )
 }
 
-const validationSchema = yup.object().shape({
-  ownerName: yup.string().required('Repository owner name is required'),
-  repositoryName: yup.string().required('Repository name is required'),
-  rating: yup
-    .number()
-    .min(0, 'Rating has to be between 0 and 100')
-    .max(100, 'Rating has to be between 0 and 100')
-    .required('Rating is required'),
-  text: yup.string().optional(),
-})
+const CreateReview = () => {
+  const [createReview] = useMutation(CREATE_REVIEW)
+  const naviagate = useNavigate()
 
-const initialValues = {
-  ownerName: '',
-  repositoryName: '',
-  rating: 0,
-  text: '',
-}
+  const onSubmit = async (values) => {
+    const review = {
+      ...values,
+      rating: parseInt(values.rating),
+    }
 
-export const ReviewContainer = ({ onSubmit }) => {
+    const { data } = await createReview({ variables: { review } })
+
+    if (data?.createReview) {
+      naviagate(`/repositories/${data.createReview.repositoryId}`)
+    }
+  }
+
   return (
     <Formik
       initialValues={initialValues}
       onSubmit={onSubmit}
       validationSchema={validationSchema}>
-      {({ handleSubmit }) => <ReviewForm onSubmit={handleSubmit} />}
+      {({ handleSubmit }) => <CreateReviewForm onSubmit={handleSubmit} />}
     </Formik>
   )
-}
-
-const CreateReview = () => {
-  const [mutate] = useMutation(CREATE_REVIEW)
-  const navigate = useNavigate()
-
-  const onSubmit = async (values) => {
-    try {
-      const payload = await mutate({
-        variables: {
-          review: {
-            ...values,
-            rating: parseInt(values.rating),
-          },
-        },
-      })
-      const { data } = payload
-      navigate(`/repository/${data.createReview.repository.id}`)
-    } catch (e) {
-      console.log(e)
-    }
-  }
-
-  return <ReviewContainer onSubmit={onSubmit} />
 }
 
 export default CreateReview
