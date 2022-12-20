@@ -48,6 +48,26 @@ app.post('/api/notes', async (req, res) => {
   }
 })
 
+app.get('/api/notes/:id', async (req, res) => {
+  const note = await Note.findByPk(req.params.id)
+  if (note) {
+    res.json(note)
+  } else {
+    res.status(404).end()
+  }
+})
+
+app.put('/api/notes/:id', async (req, res) => {
+  const note = await Note.findByPk(req.params.id)
+  if (note) {
+    note.important = req.body.important
+    await note.save()
+    res.json(note)
+  } else {
+    res.status(404).end()
+  }
+})
+
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
