@@ -7,5 +7,7 @@ back:
 - dotenv
 - pg
 - sequelize
+- express-async-errors
+- jsonwebtoken
 
 back dev:
