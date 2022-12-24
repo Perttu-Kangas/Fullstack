@@ -1,10 +1,11 @@
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlllZXQiLCJpZCI6MSwiaWF0IjoxNjcxNjA5ODAxfQ.PFev44RzbM96rstZkYRtr8YQ0v-XkxrzCz0PGkkrz1E
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlllZXRzQGZvby5jb20iLCJpZCI6MSwiaWF0IjoxNjcxODgxMzA1fQ.n-YcheFVwFY0pR_noR_MHdyCRU-qUEd0_zgXEJ7M8fI
 
 {
     "title": "Mmmmm",
     "author": "Aaaaaaaaaaa",
     "url": "https://www.ccccccccc.com/",
-    "likes": 10
+    "likes": 10,
+    "year": 2022
 }

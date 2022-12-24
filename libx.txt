@@ -9,5 +9,7 @@ back:
 - sequelize
 - express-async-errors
 - jsonwebtoken
+- umzug
 
 back dev:
+- nodemon
