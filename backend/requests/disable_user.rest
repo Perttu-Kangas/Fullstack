@@ -1,0 +1,6 @@
+PUT http://localhost:3001/api/users/Yeets2@foo.com
+Content-Type: application/json
+
+{
+    "disabled": true
+}

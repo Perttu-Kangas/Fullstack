@@ -59,7 +59,12 @@ router.put('/:username', async (req, res) => {
     }
   })
 
-  user.name = req.body.name
+  if (req.body.name) {
+    user.name = req.body.name
+  }
+  if (req.body.disabled) {
+    user.disabled = req.body.disabled
+  }
   await user.save()
   res.json(req.user)
 })

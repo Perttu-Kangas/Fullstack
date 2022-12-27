@@ -1,6 +1,6 @@
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlllZXRzQGZvby5jb20iLCJpZCI6MSwiaWF0IjoxNjcxODgxMzA1fQ.n-YcheFVwFY0pR_noR_MHdyCRU-qUEd0_zgXEJ7M8fI
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlllZXRzMkBmb28uY29tIiwiaWQiOjMsImlhdCI6MTY3MjE1MTA4NH0.-_jh5Zr_Cx8RskyyjCqG2zvh1K8I9zCVj5kEESin7aA
 
 {
     "title": "222Mmmmm",
