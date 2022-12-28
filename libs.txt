@@ -1,3 +1,5 @@
+Osat 8 - 13 sisältää omat libs.txt tiedostot
+
 Front:
 - react
 - axios (http requests)
