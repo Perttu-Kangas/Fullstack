@@ -1,0 +1,17 @@
+Just adding these here for quick reference
+
+docker build . -t todo-backend
+docker build . -f ./dev.Dockerfile -t hello-front-dev
+docker container run -d -p 8080:80 nginx
+
+docker container ls
+docker exec -it wonderful_ramanujan bash
+
+REDIS_URL=//localhost:6379 MONGO_URL=mongodb://the_username:the_password@localhost:3456/the_database npm run dev
+
+docker-compose -f docker-compose.dev.yml up -d
+docker-compose -f docker-compose.dev.yml down --volumes
+
+docker run -p 3000:3000 -v "$(pwd):/usr/src/app/" hello-front-dev
+
+docker-compose run debug-helper wget -O - http://app:3000
