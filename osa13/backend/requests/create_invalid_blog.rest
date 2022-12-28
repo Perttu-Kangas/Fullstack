@@ -1,0 +1,9 @@
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlllZXRzQGZvby5jb20iLCJpZCI6MSwiaWF0IjoxNjcxODgxMzA1fQ.n-YcheFVwFY0pR_noR_MHdyCRU-qUEd0_zgXEJ7M8fI
+
+{
+    "title": "Mmmmm",
+    "url": "https://www.ccccccccc.com/",
+    "likes": 10
+}

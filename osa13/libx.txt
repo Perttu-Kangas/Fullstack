@@ -1,0 +1,15 @@
+front:
+
+front dev:
+
+back:
+- express
+- dotenv
+- pg
+- sequelize
+- express-async-errors
+- jsonwebtoken
+- umzug
+
+back dev:
+- nodemon
