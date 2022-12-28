@@ -1,0 +1,37 @@
+Npm install:
+- expo
+- expo-status-bar
+- react
+- react-native
+- react-router-native
+- formik
+- yup
+- @apollo/client
+- graphql
+- @expo/metro-config
+- date-fns
+- react-native-paper
+- react-native-safe-area-context
+
+Expo install:
+- react-native-web@~0.18.7
+- react-dom@18.2.0
+- @expo/webpack-config@^0.17.0
+- @react-native-async-storage/async-storage
+- expo-linking
+
+Npm install dev:
+- @babel/core
+- @babel/eslint-parser
+- eslint-plugin-react
+- eslint-plugin-react-native
+- react-native-debugger-open
+- jest
+- jest-expo
+- eslint-plugin-jest
+- react-test-renderer@18.2.0
+- @testing-library/react-native
+- @testing-library/jest-native
+
+CMD:
+- react-native-debugger --no-sandbox (--no-sandbox to fix GPU error)
